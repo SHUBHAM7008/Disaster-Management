@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earthquake Precautions</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 70px; /* Adjusted padding for the sticky navbar */
+            background-color: #f9f9f9;
+            perspective: 1000px;
+            overflow-x: hidden;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background-color: #f8f9fa; /* Light grey background */
+            color: #333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed; /* Changed to fixed */
+            top: 0;
+            width: 100%;
+            z-index: 999;
+            transition: background-color 0.3s ease;
+            transform: translateZ(50px);
+        }
+
+        .navbar-brand, .nav-link {
+            color: #333 !important;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-brand:hover, .nav-link:hover {
+            color: #007bff !important; /* Blue color on hover */
+        }
+
+        /* Active link color */
+        .nav-item.active .nav-link {
+            color: #007bff !important; /* Highlight active link */
+        }
+
+        /* Card Styles */
+        .precaution-card {
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-style: preserve-3d;
+            cursor: pointer;
+            backface-visibility: hidden;
+        }
+
+        .precaution-card:hover {
+            transform: translateY(-15px) rotateX(3deg) rotateY(2deg) scale(1.03);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .precaution-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+
+        .precaution-description {
+            font-size: 1rem;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .precaution-image {
+            width: 100%; /* Full width */
+            height: 200px; /* Fixed height for uniformity */
+            object-fit: cover; /* Ensures the image covers the space without stretching */
+            border-radius: 15px;
+            margin-bottom: 15px;
+            transform: translateZ(30px);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .precaution-card:hover .precaution-image {
+            transform: translateZ(50px) scale(1.05);
+        }
+
+        /* Fade-in effect for the page */
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 1.5s forwards;
+        }
+
+        /* Keyframes for fade-in */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Padding */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 90px; /* More padding for smaller screens */
+            }
+            .precaution-card { transform-style: flat; }
+        }
+    </style>
+</head>
+<body class="fade-in">
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light">
+    <!-- <div class="container">
+        <a class="navbar-brand" th:href="@{/}">Disaster Response</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button> -->
+    <!-- <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/incidents}">Incidents</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/resources}">Resources</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/volunteers}">Volunteers</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/shelters}">Shelters</a></li>
+            <li class="nav-item"><a class="nav-link active" th:href="@{/earthquake_precautions}">Precautions</a></li>
+        </ul>
+    </div> -->
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container mt-5 pt-5">
+    <h2 class="text-center fade-in" style="color: #007bff;">Earthquake Precautions</h2>
+
+    <!-- List of Earthquake Precautions -->
+    <div class="row">
+        <!-- Precaution 1 -->
+        <div class="col-md-6">
+            <div class="card precaution-card fade-in">
+                <img src="https://www.shakeoutbc.ca/wp-content/uploads/2022/02/howto-graphic-new.svg" alt="Drop, Cover, and Hold On" class="precaution-image">
+                <div class="card-body">
+                    <h5 class="precaution-title">Drop, Cover, and Hold On</h5>
+                    <p class="precaution-description">
+                        Drop to your hands and knees, cover your head and neck, and hold on until the shaking stops. Stay indoors and away from windows.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Precaution 2 -->
+        <div class="col-md-6">
+            <div class="card precaution-card fade-in">
+                <img src="https://images.news18.com/webstories/2022/11/earthquake-checklist-2.jpg" alt="Stay Away from Windows" class="precaution-image">
+                <div class="card-body">
+                    <h5 class="precaution-title">Stay Away from Windows</h5>
+                    <p class="precaution-description">
+                        Windows can shatter during an earthquake, so it is important to stay away from glass and windows during the shaking.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Precaution 3 -->
+        <div class="col-md-6">
+            <div class="card precaution-card fade-in">
+                <img src="https://cdn.prod.website-files.com/5e7fdf360c4ef47490fa4124/6359a9ca42f98e5b1f66e9ec_Shelter-in-Place.jpg" alt="Find Safe Shelter" class="precaution-image">
+                <div class="card-body">
+                    <h5 class="precaution-title">Find Safe Shelter</h5>
+                    <p class="precaution-description">
+                        During shaking, take shelter under sturdy furniture like a table or desk. If no furniture is available, crouch in an interior corner and protect your head.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Precaution 4 -->
+        <div class="col-md-6">
+            <div class="card precaution-card fade-in">
+                <img src="https://www.berriencounty.org/ImageRepository/Document?documentID=14314" alt="Prepare an Emergency Kit" class="precaution-image">
+                <div class="card-body">
+                    <h5 class="precaution-title">Prepare an Emergency Kit</h5>
+                    <p class="precaution-description">
+                        Keep an emergency kit with essential supplies like water, food, a flashlight, and a first-aid kit. Be sure to have enough supplies for at least three days.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

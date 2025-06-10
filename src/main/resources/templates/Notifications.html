@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Notifications</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        #notifications {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .notification {
+            padding: 5px;
+            margin-bottom: 10px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<h1>Real-Time Notifications</h1>
+
+<!-- Input field to send messages -->
+<input type="text" id="messageInput" placeholder="Enter message to send" />
+<button onclick="sendMessage()">Send Message</button>
+
+<!-- Notifications container -->
+<div id="notifications"></div>
+
+<!-- Add SockJS and STOMP.js libraries -->
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.0/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@5.3.0/dist/stomp.umd.min.js"></script>
+
+<script>
+    // Connect to the WebSocket server
+    var socket = new SockJS('http://localhost:8080/ws');  // "/ws" is the WebSocket endpoint
+    var stompClient = Stomp.over(socket);
+
+    // Connect to the WebSocket and subscribe to notifications
+    stompClient.connect({}, function(frame) {
+        console.log('Connected: ' + frame);
+
+        // Replace 'userId' with the actual user ID, could be dynamic
+        var userId = "12345";  // For specific users
+
+        // Subscribe to user-specific notifications
+        stompClient.subscribe('/topic/notifications/' + userId, function(notificationOutput) {
+            // When a message is received, this function will be triggered
+            var notification = notificationOutput.body;
+            displayNotification(notification);
+        });
+
+        // You can also subscribe to general notifications (all users)
+        stompClient.subscribe('/topic/cricket', function(notificationOutput) {
+            var notification = notificationOutput.body;
+            displayNotification(notification);
+        });
+    });
+
+    // Function to display the notification on the webpage
+    function displayNotification(notification) {
+        var notificationContainer = document.getElementById('notifications');
+        var notificationElement = document.createElement('div');
+        notificationElement.className = 'notification';
+        notificationElement.innerText = notification;
+        notificationContainer.appendChild(notificationElement);
+        // Scroll to the bottom of the notification container to show the latest notification
+        notificationContainer.scrollTop = notificationContainer.scrollHeight;
+    }
+
+    // Function to send message to the backend via WebSocket
+    function sendMessage() {
+    alert(stompClient.connected);
+        var message = document.getElementById('messageInput').value;
+
+        if (message && stompClient.connected) {
+            // Send the message to the server (broadcast or user-specific topic)
+            stompClient.send('/app/sendNotification', {}, message);  // Send to the server
+
+            document.getElementById('messageInput').value = '';  // Clear the input field
+        } else {
+            alert('Please enter a message');
+        }
+    }
+</script>
+</body>
+</html>

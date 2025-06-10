@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disaster Response Coordination Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #2C3E50;
+            --primary-color: #18BC9C;
+            --hover-color: #128F76;
+            --accent-color: #E74C3C;
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        /* Existing styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        nav {
+            background: var(--bg-color);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+            background: rgba(24, 188, 156, 0.1);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            bottom: -5px;
+            left: 0;
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 120px 20px;
+            background: linear-gradient(rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.8)),
+                        url('https://source.unsplash.com/1600x900/?rescue,emergency') center/cover;
+            color: white;
+            margin-top: -82px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.2s;
+            animation-fill-mode: backwards;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            background: var(--accent-color);
+            color: white;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            border: 2px solid transparent;
+            animation: fadeInUp 1s ease 0.4s;
+            animation-fill-mode: backwards;
+        }
+
+        .btn:hover {
+            background: transparent;
+            border-color: var(--accent-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        /* New Data Sections CSS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            padding: 60px 40px;
+            perspective: 1000px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            transform-style: preserve-3d;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .incidents-grid {
+            display: grid;
+            gap: 30px;
+            padding: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .incident-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            transform: translateZ(0);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .incident-card:hover {
+            transform: scale(1.03) rotateZ(0.5deg);
+        }
+
+        .severity-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .map-container {
+            height: 500px;
+            border-radius: 20px;
+            overflow: hidden;
+            transform: translateZ(0);
+            box-shadow: var(--shadow);
+            margin: 40px;
+            border: 3px solid white;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin: 60px 0 40px;
+            position: relative;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .floating-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .team-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .team-avatar:hover {
+            transform: scale(1.1) rotate(15deg);
+        }
+
+        .data-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .data-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive Fixes */
+        @media (max-width: 768px) {
+            nav {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero {
+                padding: 100px 20px;
+                margin-top: 0;
+            }
+
+            .hero h1 {
+                font-size: 2.25rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .stats-grid {
+                padding: 30px 20px;
+            }
+
+            .map-container {
+                margin: 20px;
+                height: 300px;
+            }
+        }
+    </style>>
+</head>
+<body>
+
+<!-- Existing Navigation -->
+<nav>
+    <div class="logo">Disaster Response</div>
+    <ul class="nav-links">
+        <li><a th:href="@{/admin/incidents}">Incidents</a></li>
+        <li><a th:href="@{/admin/resources}">Resources</a></li>
+        <li><a th:href="@{/admin/volunteers}">Volunteers</a></li>
+        <li><a th:href="@{/admin/shelters}">Shelters</a></li>
+        <li><a th:href="@{/admin/disaster-report}">Reports</a></li>
+        <li><a th:href="@{/admin/ReqResources}">Requests</a></li>
+    </ul>
+</nav>
+
+<!-- Existing Hero Section -->
+<section class="hero">
+    <h1>Disaster Response Coordination Platform</h1>
+    <p>Rapid coordination for effective emergency management and disaster relief operations</p>
+    <a th:href="@{/report-incident}" class="btn">Start </a>
+</section>
+
+<!-- New Data Sections -->
+<section class="data-section" id="stats">
+    <h2 class="section-title">Real-Time Statistics</h2>
+    <div class="stats-grid">
+        <!-- Active Incidents -->
+        <div class="stat-card">
+            <i class="fas fa-fire stat-icon floating-icon"></i>
+            <h3>Active Incidents</h3>
+            <p class="stat-number" id="active-incidents">Loading...</p> <!-- Placeholder for dynamic data -->
+            <small>Updated 5min ago</small>
+        </div>
+
+        <!-- Active Volunteers -->
+        <div class="stat-card">
+            <i class="fas fa-hands-helping stat-icon floating-icon"></i>
+            <h3>Volunteers Active</h3>
+            <p class="stat-number" id="active-volunteers">Loading...</p> <!-- Placeholder for dynamic data -->
+            <small>Across 12 regions</small>
+        </div>
+
+        <!-- Resources Deployed -->
+        <div class="stat-card">
+            <i class="fas fa-box-open stat-icon floating-icon"></i>
+            <h3>Resources Deployed</h3>
+            <p class="stat-number" id="resources-deployed">Loading...</p> <!-- Placeholder for dynamic data -->
+            <small>Medical kits, food packs</small>
+        </div>
+    </div>
+</section>
+
+<section class="data-section" id="incidents">
+    <h2 class="section-title">Active Incidents</h2>
+    <div class="incidents-grid">
+        <div class="incident-card">
+            <div class="severity-indicator" style="background: #E74C3C;"></div>
+            <img src="https://www.aljazeera.com/wp-content/uploads/2024/09/AP24254586188844-1726071602.jpg?resize=770%2C513&quality=80" alt="Incident" style="width:100%;height:200px;object-fit:cover;">
+            <div style="padding:20px;">
+                <h3>Coastal Flood Alert</h3>
+                <p>📍 Northern Region</p>
+                <p>🚨 Critical Status</p>
+                <div style="display:flex; justify-content:space-between; margin-top:15px;">
+                    <small>🕒 2h ago</small>
+                    <a href="#" class="btn" style="padding:8px 15px;">Details</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add more incident cards similarly -->
+    </div>
+</section>
+
+<section class="data-section" id="response-teams">
+    <h2 class="section-title">Deployed Response Teams</h2>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <img src="https://static.vecteezy.com/system/resources/thumbnails/004/832/736/small_2x/doctors-day-concept-with-team-of-medical-professionals-free-vector.jpg" class="team-avatar">
+            <h3>Medical Team Alpha</h3>
+            <p>📍 Flood Zone 3A</p>
+            <p>👨⚕ 12 members</p>
+        </div>
+        <!-- Add more team cards -->
+    </div>
+</section>
+
+<section class="data-section" id="live-map">
+    <h2 class="section-title">Live Response Map</h2>
+    <div class="map-container">
+        <iframe
+                width="100%"
+                height="100%"
+                frameborder="0"
+                scrolling="no"
+                marginheight="0"
+                marginwidth="0"
+                src="https://www.openstreetmap.org/export/embed.html?bbox=-180.000000%2C-90.000000%2C180.000000%2C90.000000&amp;layer=hot">
+        </iframe>
+    </div>
+</section>
+
+<script>
+    // Add scroll animation for sections
+    document.addEventListener('DOMContentLoaded', () => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.data-section').forEach(section => {
+            observer.observe(section);
+        });
+    });
+
+    async function fetchCountData() {
+        try {
+            // Fetch data for active incidents
+            const incidentResponse = await fetch('/api/incident/count');
+            const incidentData = await incidentResponse.json(); // Assuming it returns a JSON with an integer count
+            document.getElementById('active-incidents').innerText = incidentData.count || '4';
+
+            // Fetch data for active volunteers
+            const volunteersResponse = await fetch('/api/volunteer/count');
+            const volunteersData = await volunteersResponse.json(); // Assuming it returns a JSON with an integer count
+            document.getElementById('active-volunteers').innerText = volunteersData.count || '12';
+
+            // Fetch data for resources deployed
+            const resourcesResponse = await fetch('/api/resource/count');
+            const resourcesData = await resourcesResponse.json(); // Assuming it returns a JSON with an integer count
+            document.getElementById('resources-deployed').innerText = resourcesData.count || '5';
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    // Fetch count data on page load
+    document.addEventListener('DOMContentLoaded', fetchCountData);
+</script>
+
+</body>
+</html>

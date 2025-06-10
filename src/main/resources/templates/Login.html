@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <script>
+        // Display popup based on URL parameter
+        window.onload = function () {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get("success") === "true") {
+                alert("Registration successful!");
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="login-container">
+    <h1>Login</h1>
+
+        <!-- OAuth Login -->
+        <div class="oauth-login">
+            <a href="/oauth2/authorization/google" class="oauth-button google">
+                <img src="/images/google.png" alt="Google Logo"> Login with Google
+            </a>
+            <a href="/oauth2/authorization/github" class="oauth-button github">
+                <img src="/images/github.png" alt="GitHub Logo"> Login with GitHub
+            </a>
+        </div>
+
+        <br>
+        <a th:href="@{/admin/loginPage}">Login as Admin!! </a>
+    </form>
+</div>
+</body>
+</html>

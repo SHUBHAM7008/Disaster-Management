@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flood Precautions</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 70px; /* Adjusted padding for the sticky navbar */
+            background-color: #f9f9f9;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background-color: #f8f9fa; /* Light grey background */
+            color: #333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed; /* Changed to fixed */
+            top: 0;
+            width: 100%;
+            z-index: 999;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar-brand, .nav-link {
+            color: #333 !important;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-brand:hover, .nav-link:hover {
+            color: #007bff !important; /* Blue color on hover */
+        }
+
+        /* Active link color */
+        .nav-item.active .nav-link {
+            color: #007bff !important; /* Highlight active link */
+        }
+
+        /* Card Styles */
+        .precaution-card {
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .precaution-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .precaution-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+
+        .precaution-title:hover {
+            color: #00fc4c;
+        }
+
+        .precaution-description {
+            font-size: 1rem;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Fade-in effect for the page */
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 1.5s forwards;
+        }
+
+        /* Keyframes for fade-in */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Padding */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 90px; /* More padding for smaller screens */
+            }
+        }
+
+        /* Image Styling */
+        .precaution-image {
+            width: 100%; /* Full width of the parent container */
+            height: 300px; /* Fixed height for uniformity */
+            object-fit: cover; /* Ensures the image covers the space without distorting */
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for attractiveness */
+            margin-bottom: 15px; /* Space below the image */
+        }
+
+        /* Extra styling for ensuring image layout */
+        .col-md-6 {
+            margin-bottom: 30px; /* Space between the cards */
+        }
+
+    </style>
+</head>
+<body class="fade-in">
+
+<!-- Navigation -->
+<!-- <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">Disaster Response</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/incidents}">Incidents</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/resources}">Resources</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/volunteers}">Volunteers</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/shelters}">Shelters</a></li>
+            </ul>
+        </div>
+    </div>
+</nav> -->
+
+<!-- Main Content -->
+<div class="container mt-5 pt-5">
+    <h2 class="text-center fade-in" style="color: #007bff;">Flood Precautions</h2>
+
+    <!-- List of Flood Precautions -->
+    <div class="row">
+        <!-- Precaution 1 -->
+        <div class="col-md-6">
+            <div class="card precaution-card fade-in">
+                <img src="https://static.thenounproject.com/png/1924157-200.png" alt="Flood Move to Higher Ground" class="precaution-image">
+                <div class="card-body">
+                    <h5 class="precaution-title">Move to Higher Ground</h5>
+                    <p class="precaution-description">
+                        In case of flooding, move to higher ground immediately. Avoid walking through floodwaters as they can be deeper than they appear.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Precaution 2 -->
+        <div class="col-md-6">
+            <div class="card precaution-card fade-in">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKIe-8DnM2nM7NvtI0z6cr7k08L5sYydcBWw&s" alt="Avoid Driving" class="precaution-image">
+                <div class="card-body">
+                    <h5 class="precaution-title">Avoid Driving</h5>
+                    <p class="precaution-description">
+                        Never drive through flooded areas. Water can easily sweep away a vehicle, and roads may be washed out or hidden under water.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Precaution 3 -->
+        <div class="col-md-6">
+            <div class="card precaution-card fade-in">
+                <img src="https://www.berriencounty.org/ImageRepository/Document?documentID=14314" alt="Prepare Emergency Kit" class="precaution-image">
+                <div class="card-body">
+                    <h5 class="precaution-title">Prepare an Emergency Kit</h5>
+                    <p class="precaution-description">
+                        Pack an emergency kit with essentials such as water, food, medication, important documents, and flashlights. Ensure it is accessible.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Precaution 4 -->
+        <div class="col-md-6">
+            <div class="card precaution-card fade-in">
+                <img src="https://media.istockphoto.com/id/2150790797/vector/stay-informed-speech-bubble-handwriting-phrase-black-color.jpg?s=612x612&w=0&k=20&c=pHEuPOw6P1NAlNCFQcNC-QPv_5J4vNsJbOCJtcrvFWI=" alt="Stay Informed" class="precaution-image">
+                <div class="card-body">
+                    <h5 class="precaution-title">Stay Informed</h5>
+                    <p class="precaution-description">
+                        Keep updated on flood alerts and warnings through radio, mobile apps, or official government sources. Flooding can escalate quickly.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

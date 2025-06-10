@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disaster Reports</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #2C3E50;
+            --primary-color: #18BC9C;
+            --hover-color: #128F76;
+            --accent-color: #E74C3C;
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container { margin-top: 50px; }
+        h2 {
+            text-align: center;
+            font-weight: bold;
+            color: var(--text-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: fadeInUp 1s ease;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: var(--shadow);
+            border-radius: 10px;
+            overflow: hidden;
+            animation: slideInUp 0.7s ease-out;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th { background-color: var(--primary-color); color: white; }
+        tr:hover { background-color: #f1f1f1; transition: 0.3s; }
+
+        /* Map Styling */
+        .map-container {
+            width: 100%;
+            height: 300px;
+            border-radius: 8px;
+            margin-top: 10px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .map-container:hover {
+             transform: scale(1.03);
+        }
+
+        /* Ensure consistent spacing in forms within modals */
+        .modal-body .mb-3 {
+            margin-bottom: 1.5rem !important; /* Overrides Bootstrap's default */
+        }
+
+        /* Fixed Column Widths */
+        th:nth-child(1), /* Name Column */
+        td:nth-child(1) {
+            width: 25%; /* Adjust as needed */
+            word-break: break-word;  /* Prevent overflow */
+        }
+
+        th:nth-child(2), /* Description Column */
+        td:nth-child(2) {
+            width: 40%; /* Adjust as needed */
+            word-break: break-word;  /* Prevent overflow */
+        }
+
+        th:nth-child(3), /* Map Column */
+        td:nth-child(3) {
+            width: 35%; /* Adjust as needed */
+        }
+
+        th:nth-child(1), /* Name Column */
+        td:nth-child(1) {
+            width: 25%; /* Adjust as needed */
+            word-break: break-word;  /* Prevent overflow */
+        }
+
+        th:nth-child(2), /* Description Column */
+        td:nth-child(2) {
+            width: 40%; /* Adjust as needed */
+            word-break: break-word;  /* Prevent overflow */
+        }
+
+        th:nth-child(3), /* Map Column */
+        td:nth-child(3) {
+            width: 35%; /* Adjust as needed */
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+            background: rgba(24, 188, 156, 0.1);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm animate__animated animate__fadeInDown">
+    <div class="container">
+        <a class="navbar-brand" href="#">Disaster Report</a>
+        <ul class="nav-links d-flex gap-3">
+            <li><a href="/admin/">Home</a></li>
+            <li><a href="/admin/incidents">Incidents</a></li>
+            <li><a href="/admin/resources">Resources</a></li>
+            <li><a href="/admin/volunteers">Volunteers</a></li>
+            <li><a href="/admin/shelters">Shelters</a></li>
+            <li><a href="/admin/disaster-report">Disaster</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container mt-4 animate__animated animate__fadeInUp">
+    <h2>Disaster Reports</h2>
+    <p class="text-center">View reported disasters with location maps.</p>
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Map</th>
+        </tr>
+        </thead>
+        <tbody id="disasterReportTableBody"></tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    async function fetchDisasterReports() {
+        try {
+            const response = await fetch('/api/disaster-reports');  // get METHOD
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);  // Check for HTTP errors
+            }
+            const contentType = response.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                throw new Error(`Expected JSON, but received: ${contentType}`);
+            }
+
+            let disasterReports = await response.json();
+
+            if (!Array.isArray(disasterReports)) {
+                console.error('API returned non-array:', disasterReports);
+                throw new TypeError('Expected an array but received non-array data.');
+            }
+
+             const tableBody = document.getElementById('disasterReportTableBody');
+            tableBody.innerHTML = '';
+
+            disasterReports.forEach(report => {
+                const row = `<tr class="animate__animated animate__fadeInUp">
+                    <td>${report.name}</td>
+                    <td>${report.description}</td>
+                    <td><div id="map-${report.name}" class="map-container"></div></td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            });
+
+            // Initialize maps after rows are added
+            disasterReports.forEach(report => {
+                // Make sure latitude and longitude are numbers, and handle missing data
+                const latitude = parseFloat(report.latitude);
+                const longitude = parseFloat(report.longitude);
+
+                if (isNaN(latitude) || isNaN(longitude)) {
+                    console.warn(`Invalid or missing coordinates for ${report.name}. Skipping map initialization.`);
+                    return; // Skip if coordinates are invalid
+                }
+                initMap(report.name, latitude, longitude);
+            });
+
+        } catch (error) {
+            console.error('Error fetching disaster reports:', error);
+            document.getElementById('disasterReportTableBody').innerHTML = `<tr><td colspan="3">Failed to load data. Error: ${error.message}</td></tr>`;
+        }
+    }
+
+    function initMap(reportName, latitude, longitude) {
+        const mapId = `map-${reportName}`;
+        const mapElement = document.getElementById(mapId);
+
+        if (!mapElement) {
+            console.error(`Map element with ID ${mapId} not found.`);
+            return;
+        }
+
+        // Check if map is already initialized
+        if (mapElement._leaflet_id) {
+            // Get the map instance
+            let map = L.DomUtil.get(mapId);
+            // Remove the map if it exists
+            map._leaflet_id = null;
+        }
+
+        const map = L.map(mapId).setView([latitude, longitude], 10);  // Adjust zoom level
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        L.marker([latitude, longitude]).addTo(map)
+            .bindPopup(`<b>${reportName}</b><br />Lat: ${latitude}, Long: ${longitude}`).openPopup();
+    }
+
+    window.onload = fetchDisasterReports;
+</script>
+</body>
+</html>

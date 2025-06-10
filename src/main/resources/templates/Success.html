@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .error-container {
+            text-align: center;
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .error-container h1 {
+            font-size: 5rem;
+            color: #d9534f;
+        }
+
+        .error-container h2 {
+            margin: 10px 0;
+            font-size: 2rem;
+        }
+
+        .error-container p {
+            margin: 20px 0;
+            font-size: 1rem;
+        }
+
+        .error-container a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #3b035b;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .error-container a:hover {
+            background-color: #52087c;
+        }
+    </style>
+</head>
+<body>
+<div class="error-container">
+    <h1>Success</h1>
+    <h2>Proceed</h2>
+    <p>Great</p>
+    <a href="javascript:void(0);" onclick="navigateTwoPagesBack()">Go Back</a>
+</div>
+
+<script>
+    function navigateTwoPagesBack() {
+        if (window.history.length > 1) {
+            window.history.go(-1);
+        } else {
+            alert("No previous of previous page available.");
+        }
+    }
+</script>
+
+</body>
+</html>
