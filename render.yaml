@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: disaster-management
+    env: docker
+    plan: free
+    region: oregon
+    branch: master
+    dockerfilePath: Dockerfile
+    envVars:
+      - key : spring.datasource.url
+        value : jdbc:mysql://root:EBTIeCpZyzwLqwWskxNdoEZrniwymPra@switchback.proxy.rlwy.net:12352/railway
+      - key : spring.datasource.username
+        value : root
+      - key : spring.datasource.password
+        value : EBTIeCpZyzwLqwWskxNdoEZrniwymPra
+      - key : PORT
+        value: 8080
